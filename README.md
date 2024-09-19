@@ -17,7 +17,7 @@ Find My Pet is an project designed to help you keep track of your beloved pets u
 
 4) Run the database migrations and seed the database.
 
-5) run 
+5) Run 
 
     php artisan key:generate && npm install && npm run dev
 
