@@ -1,0 +1,1433 @@
+openapi: 3.0.3
+info:
+  title: 'Find my pet app'
+  description: 'Ocitavanje web stranice sa svim informacijama vlasnika kao i zalutale sape, moguce je putem NFC-a, kao i skeniranjem QR koda. Prislanjanjem taga na telefon koji podrzava NFC tehnologiju ili skeniranjem QR koda koji se nalazi na poledjini taga, pristupicete web stranici koja sadrzi informacije o vlasniku i zalutalom ljubimcu. Obavestite vlasnika o Vasoj lokaciji ili pozovite i pomozite da se ljubimac vrati u svoj dom!'
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost:8000'
+paths:
+  /api/v1/signup:
+    post:
+      summary: 'Register a new user and return an access token.'
+      operationId: registerANewUserAndReturnAnAccessToken
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    user:
+                      id: 1
+                      email: test@paws.com
+                      status: 1
+                      created_at: '2024-09-19T12:34:56.000000Z'
+                      updated_at: '2024-09-19T12:34:56.000000Z'
+                    token: your_access_token_here
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          email:
+                            type: string
+                            example: test@paws.com
+                          status:
+                            type: integer
+                            example: 1
+                          created_at:
+                            type: string
+                            example: '2024-09-19T12:34:56.000000Z'
+                          updated_at:
+                            type: string
+                            example: '2024-09-19T12:34:56.000000Z'
+                      token:
+                        type: string
+                        example: your_access_token_here
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'The email address of the user.'
+                  example: test@paws.com
+                password:
+                  type: string
+                  description: 'The password for the user, must be at least 6 characters long.'
+                  example: password
+                user_id:
+                  type: integer
+                  description: 'The ID of the user to update.'
+                  example: 1
+              required:
+                - email
+                - password
+                - user_id
+      security: []
+  /api/v1/login:
+    post:
+      summary: 'Authenticate a user and return an access token.'
+      operationId: authenticateAUserAndReturnAnAccessToken
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    accessToken: your_access_token_here
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                        example: your_access_token_here
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    email:
+                      - 'The provided credentials are incorrect.'
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example:
+                          - 'The provided credentials are incorrect.'
+                        items:
+                          type: string
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'The email address of the user.'
+                  example: test@paws.com
+                password:
+                  type: string
+                  description: 'The password for the user.'
+                  example: password
+              required:
+                - email
+                - password
+      security: []
+  /api/v1/pets/founded:
+    post:
+      summary: 'Send notifications for a found pet.'
+      operationId: sendNotificationsForAFoundPet
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        405:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Error sending founded notifications!'
+                properties:
+                  error:
+                    type: string
+                    example: 'Error sending founded notifications!'
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                long:
+                  type: string
+                  description: 'The longitude of the found pet.'
+                  example: rerum
+                lat:
+                  type: string
+                  description: 'The latitude of the found pet.'
+                  example: enim
+                token:
+                  type: string
+                  description: 'The token for authentication.'
+                  example: architecto
+                email:
+                  type: string
+                  description: 'optional The email of the user.'
+                  example: ischumm@example.net
+              required:
+                - long
+                - lat
+                - token
+      security: []
+  '/api/v1/pets/{id}/photo':
+    put:
+      summary: "Store a pet photo\n\nUpload a photo for a pet."
+      operationId: storeAPetPhotoUploadAPhotoForAPet
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    name: Buddy
+                    image_url: 'http://example.com/images/buddy.jpg'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Buddy
+                      image_url:
+                        type: string
+                        example: 'http://example.com/images/buddy.jpg'
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: 'The image file to upload. Must be jpeg, png, jpg, gif, or svg and not exceed 10 MB.'
+              required:
+                - image
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the pet.'
+        example: 8
+        required: true
+        schema:
+          type: integer
+  /api/v1/pets/send_number:
+    post:
+      summary: 'Send a notification with a phone number.'
+      operationId: sendANotificationWithAPhoneNumber
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        405:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Error sending number notifications!'
+                properties:
+                  error:
+                    type: string
+                    example: 'Error sending number notifications!'
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                founder_phone:
+                  type: integer
+                  description: 'The phone number of the founder.'
+                  example: 9
+                email:
+                  type: string
+                  description: 'optional The email of the user.'
+                  example: ernser.chloe@example.net
+              required:
+                - founder_phone
+      security: []
+  /api/v1/pets/missing:
+    get:
+      summary: "Report a pet as missing\n\nSet a pet's status as missing and notify relevant users."
+      operationId: reportAPetAsMissingSetAPetsStatusAsMissingAndNotifyRelevantUsers
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Pet status updated to missing.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Pet status updated to missing.'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No pet founded!'
+                properties:
+                  message:
+                    type: string
+                    example: 'No pet founded!'
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pet_id:
+                  type: integer
+                  description: 'The ID of the pet to set as missing.'
+                  example: 17
+              required:
+                - pet_id
+      security: []
+  /api/v1/pets/set_missing_status:
+    post:
+      summary: 'Set the missing status of a pet and notify users.'
+      operationId: setTheMissingStatusOfAPetAndNotifyUsers
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    status: 1
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      status:
+                        type: integer
+                        example: 1
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'No pet founded!'
+                properties:
+                  error:
+                    type: string
+                    example: 'No pet founded!'
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pet_id:
+                  type: integer
+                  description: 'The ID of the pet.'
+                  example: 12
+              required:
+                - pet_id
+      security: []
+  /api/v1/pets/set_status:
+    post:
+      summary: 'Set the status of a pet.'
+      operationId: setTheStatusOfAPet
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    status: 1
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      status:
+                        type: integer
+                        example: 1
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'No pet founded!'
+                properties:
+                  error:
+                    type: string
+                    example: 'No pet founded!'
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pet_id:
+                  type: integer
+                  description: 'The ID of the pet.'
+                  example: 1
+              required:
+                - pet_id
+      security: []
+  /api/v1/pets:
+    get:
+      summary: "Get list of pets for authenticated user\n\nThis endpoint retrieves a list of pets belonging to the authenticated user."
+      operationId: getListOfPetsForAuthenticatedUserThisEndpointRetrievesAListOfPetsBelongingToTheAuthenticatedUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      name: Buddy
+                      owner:
+                        id: 1
+                        name: 'John Doe'
+                      history:
+                        -
+                          id: 1
+                          status: Healthy
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: Buddy
+                        owner:
+                          id: 1
+                          name: 'John Doe'
+                        history:
+                          -
+                            id: 1
+                            status: Healthy
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Buddy
+                        owner:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            name:
+                              type: string
+                              example: 'John Doe'
+                        history:
+                          type: array
+                          example:
+                            -
+                              id: 1
+                              status: Healthy
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              status:
+                                type: string
+                                example: Healthy
+      tags:
+        - Pets
+      security: []
+    post:
+      summary: "Store a new pet\n\nThis endpoint allows you to create a new pet with all the necessary details."
+      operationId: storeANewPetThisEndpointAllowsYouToCreateANewPetWithAllTheNecessaryDetails
+      description: ''
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    name: Buddy
+                    type: dog
+                    owner:
+                      id: 1
+                      name: 'John Doe'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Buddy
+                      type:
+                        type: string
+                        example: dog
+                      owner:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: 'John Doe'
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: 'The ID of the pet owner.'
+                  example: 7
+                name:
+                  type: string
+                  description: 'The name of the pet.'
+                  example: recusandae
+                address:
+                  type: string
+                  description: 'nullable The address of the pet.'
+                  example: inventore
+                nickname:
+                  type: string
+                  description: ''
+                  example: null
+                note:
+                  type: string
+                  description: ''
+                  example: null
+                type:
+                  type: integer
+                  description: 'The type of the pet (e.g., 1 => dog, 2 => cat).'
+                  example: 16
+                breed:
+                  type: string
+                  description: 'nullable The breed of the pet.'
+                  example: velit
+                gender:
+                  type: string
+                  description: ''
+                  example: null
+                dob:
+                  type: date
+                  description: 'nullable The date of birth of the pet.'
+                  example: sequi
+                height:
+                  type: string
+                  description: ''
+                  example: null
+                weight:
+                  type: string
+                  description: ''
+                  example: null
+                puppy:
+                  type: string
+                  description: ''
+                  example: null
+                color:
+                  type: string
+                  description: ''
+                  example: null
+                sterilised:
+                  type: string
+                  description: ''
+                  example: null
+                allergies:
+                  type: string
+                  description: ''
+                  example: null
+                vaccinated:
+                  type: string
+                  description: ''
+                  example: null
+                health_issues:
+                  type: string
+                  description: ''
+                  example: null
+                therapy:
+                  type: string
+                  description: ''
+                  example: null
+                food_type:
+                  type: string
+                  description: ''
+                  example: null
+                socialized:
+                  type: string
+                  description: ''
+                  example: null
+                vet_name:
+                  type: string
+                  description: ''
+                  example: null
+                vet_contact:
+                  type: string
+                  description: ''
+                  example: null
+                other_emergency_contacts:
+                  type: string
+                  description: ''
+                  example: null
+                reward:
+                  type: string
+                  description: ''
+                  example: null
+                reward_fee:
+                  type: string
+                  description: ''
+                  example: null
+                status:
+                  type: string
+                  description: ''
+                  example: null
+              required:
+                - user_id
+                - name
+                - type
+      security: []
+  '/api/v1/pets/{id}':
+    get:
+      summary: "Get a single pet by ID\n\nFetch details of a specific pet owned by the authenticated user."
+      operationId: getASinglePetByIDFetchDetailsOfASpecificPetOwnedByTheAuthenticatedUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    name: Buddy
+                    owner:
+                      id: 1
+                      name: 'John Doe'
+                    history:
+                      -
+                        id: 1
+                        status: Healthy
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Buddy
+                      owner:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: 'John Doe'
+                      history:
+                        type: array
+                        example:
+                          -
+                            id: 1
+                            status: Healthy
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            status:
+                              type: string
+                              example: Healthy
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No pet founded!'
+                properties:
+                  message:
+                    type: string
+                    example: 'No pet founded!'
+      tags:
+        - Pets
+      security: []
+    put:
+      summary: "Update a pet\n\nUpdate details of an existing pet."
+      operationId: updateAPetUpdateDetailsOfAnExistingPet
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    name: Buddy
+                    type: dog
+                    owner:
+                      id: 1
+                      name: 'John Doe'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Buddy
+                      type:
+                        type: string
+                        example: dog
+                      owner:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: 'John Doe'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No pet founded!'
+                properties:
+                  message:
+                    type: string
+                    example: 'No pet founded!'
+      tags:
+        - Pets
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'nullable The name of the pet.'
+                  example: molestiae
+                address:
+                  type: string
+                  description: 'nullable The address of the pet.'
+                  example: doloribus
+                nickname:
+                  type: string
+                  description: ''
+                  example: null
+                note:
+                  type: string
+                  description: ''
+                  example: null
+                type:
+                  type: integer
+                  description: 'nullable The type of the pet (e.g., 1 => dog, 2 => cat).'
+                  example: 9
+                breed:
+                  type: string
+                  description: ''
+                  example: null
+                gender:
+                  type: string
+                  description: ''
+                  example: null
+                dob:
+                  type: string
+                  description: ''
+                  example: null
+                height:
+                  type: string
+                  description: ''
+                  example: null
+                weight:
+                  type: string
+                  description: ''
+                  example: null
+                puppy:
+                  type: string
+                  description: ''
+                  example: null
+                color:
+                  type: string
+                  description: ''
+                  example: null
+                sterilised:
+                  type: string
+                  description: ''
+                  example: null
+                allergies:
+                  type: string
+                  description: ''
+                  example: null
+                vaccinated:
+                  type: string
+                  description: ''
+                  example: null
+                health_issues:
+                  type: string
+                  description: ''
+                  example: null
+                therapy:
+                  type: string
+                  description: ''
+                  example: null
+                food_type:
+                  type: string
+                  description: ''
+                  example: null
+                socialized:
+                  type: string
+                  description: ''
+                  example: null
+                vet_name:
+                  type: string
+                  description: ''
+                  example: null
+                vet_contact:
+                  type: string
+                  description: ''
+                  example: null
+                other_emergency_contacts:
+                  type: string
+                  description: ''
+                  example: null
+                reward:
+                  type: string
+                  description: ''
+                  example: null
+                reward_fee:
+                  type: string
+                  description: ''
+                  example: null
+                status:
+                  type: string
+                  description: ''
+                  example: null
+                user_id:
+                  type: string
+                  description: ''
+                  example: null
+      security: []
+    delete:
+      summary: "Delete a pet\n\nRemove a pet from the database."
+      operationId: deleteAPetRemoveAPetFromTheDatabase
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Pet deleted successfully.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Pet deleted successfully.'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No pet founded!'
+                properties:
+                  message:
+                    type: string
+                    example: 'No pet founded!'
+      tags:
+        - Pets
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the pet.'
+        example: 20
+        required: true
+        schema:
+          type: integer
+  /api/v1/products:
+    get:
+      summary: "Get a paginated list of products.\n\nThis endpoint returns a paginated list of products."
+      operationId: getAPaginatedListOfProductsThisEndpointReturnsAPaginatedListOfProducts
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"Product Name\",\n      \"price\": 100.00,\n      \"description\": \"Product Description\",\n      \"created_at\": \"2024-09-19T12:34:56.000000Z\",\n      \"updated_at\": \"2024-09-19T12:34:56.000000Z\"\n    },\n    // more products\n  ],\n  \"links\": {\n    \"first\": \"http://example.com/products?page=1\",\n    \"last\": \"http://example.com/products?page=10\",\n    \"prev\": null,\n    \"next\": \"http://example.com/products?page=2\"\n  },\n  \"meta\": {\n    \"current_page\": 1,\n    \"from\": 1,\n    \"last_page\": 10,\n    \"links\": [\n      // pagination links\n    ],\n    \"next_page_url\": \"http://example.com/products?page=2\",\n    \"path\": \"http://example.com/products\",\n    \"per_page\": 5,\n    \"prev_page_url\": null,\n    \"to\": 5,\n    \"total\": 50\n  }\n}"
+      tags:
+        - Products
+      security: []
+  '/api/v1/products/{product_id}':
+    get:
+      summary: "Get a single product by ID.\n\nThis endpoint returns the details of a single product."
+      operationId: getASingleProductByIDThisEndpointReturnsTheDetailsOfASingleProduct
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    name: 'Product Name'
+                    price: 100.0
+                    description: 'Product Description'
+                    created_at: '2024-09-19T12:34:56.000000Z'
+                    updated_at: '2024-09-19T12:34:56.000000Z'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'Product Name'
+                      price:
+                        type: number
+                        example: 100.0
+                      description:
+                        type: string
+                        example: 'Product Description'
+                      created_at:
+                        type: string
+                        example: '2024-09-19T12:34:56.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2024-09-19T12:34:56.000000Z'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Product not found'
+                properties:
+                  error:
+                    type: string
+                    example: 'Product not found'
+      tags:
+        - Products
+      security: []
+    parameters:
+      -
+        in: path
+        name: product_id
+        description: 'The ID of the product.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/v1/users:
+    get:
+      summary: 'Get list of users'
+      operationId: getListOfUsers
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      name: 'John Doe'
+                      email: john@example.com
+                      pets:
+                        -
+                          id: 1
+                          name: Fluffy
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'John Doe'
+                        email: john@example.com
+                        pets:
+                          -
+                            id: 1
+                            name: Fluffy
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'John Doe'
+                        email:
+                          type: string
+                          example: john@example.com
+                        pets:
+                          type: array
+                          example:
+                            -
+                              id: 1
+                              name: Fluffy
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              name:
+                                type: string
+                                example: Fluffy
+      tags:
+        - Users
+      security: []
+  '/api/v1/users/{id}':
+    get:
+      summary: 'Show user by ID'
+      operationId: showUserByID
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    name: 'John Doe'
+                    email: john@example.com
+                    address: 'Main Street 123'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'John Doe'
+                      email:
+                        type: string
+                        example: john@example.com
+                      address:
+                        type: string
+                        example: 'Main Street 123'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No user founded!'
+                properties:
+                  message:
+                    type: string
+                    example: 'No user founded!'
+      tags:
+        - Users
+      security: []
+    put:
+      summary: 'Update user by ID'
+      operationId: updateUserByID
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    name: 'John Doe'
+                    email: john@example.com
+                    address: 'Main Street 123'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'John Doe'
+                      email:
+                        type: string
+                        example: john@example.com
+                      address:
+                        type: string
+                        example: 'Main Street 123'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No user founded!'
+                properties:
+                  message:
+                    type: string
+                    example: 'No user founded!'
+      tags:
+        - Users
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'optional user name.'
+                  example: 'John Doe'
+                email:
+                  type: string
+                  description: 'optional Email.'
+                  example: john@example.com
+                address:
+                  type: string
+                  description: 'optional Address.'
+                  example: 'Main Street 123'
+                city:
+                  type: string
+                  description: 'optional city.'
+                  example: Belgrade
+                phone_nummber:
+                  type: string
+                  description: 'optional phone number.'
+                  example: 123-456-789
+                admin:
+                  type: integer
+                  description: 'optional is user admin.'
+                  example: 0
+                missing_notification:
+                  type: string
+                  description: ''
+                  example: null
+                share_name:
+                  type: string
+                  description: ''
+                  example: null
+                share_other_contact:
+                  type: string
+                  description: ''
+                  example: null
+                share_contact:
+                  type: string
+                  description: ''
+                  example: null
+                share_address:
+                  type: string
+                  description: ''
+                  example: null
+                share_vet_info:
+                  type: string
+                  description: ''
+                  example: null
+                superadmin:
+                  type: integer
+                  description: 'optional is user superadmin.'
+                  example: 0
+                status:
+                  type: integer
+                  description: 'optional user status.'
+                  example: 1
+                username:
+                  type: string
+                  description: 'optional username.'
+                  example: johndoe
+      security: []
+    delete:
+      summary: 'Delete user by ID'
+      operationId: deleteUserByID
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'User deleted successfully'
+                properties:
+                  message:
+                    type: string
+                    example: 'User deleted successfully'
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'User is superadmin'
+                properties:
+                  message:
+                    type: string
+                    example: 'User is superadmin'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No user founded!'
+                properties:
+                  message:
+                    type: string
+                    example: 'No user founded!'
+      tags:
+        - Users
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'user ID.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/v1/users/default:
+    post:
+      summary: 'Create a default user'
+      operationId: createADefaultUser
+      description: ''
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    name: 'Default User'
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'Default User'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Default user not selected!'
+                properties:
+                  message:
+                    type: string
+                    example: 'Default user not selected!'
+      tags:
+        - Users
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                default:
+                  type: boolean
+                  description: required.
+                  example: true
+      security: []
+tags:
+  -
+    name: Authentication
+    description: ''
+  -
+    name: Pets
+    description: ''
+  -
+    name: Products
+    description: ''
+  -
+    name: Users
+    description: ''
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.'
+security:
+  -
+    default: []
